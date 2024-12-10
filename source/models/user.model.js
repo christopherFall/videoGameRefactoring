@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const User = sequelize.define('User ', {
+const User = sequelize.define('User', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -24,11 +24,7 @@ const User = sequelize.define('User ', {
   city: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  password: { // Agregar el campo de contraseña
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+  }
 });
 
 module.exports = User;
