@@ -1,27 +1,39 @@
 // source/services/user.service.js
 const User = require('../models/user.model');
-const bcrypt = require('bcrypt');
 
 const createUser  = async (userData) => {
-  const { email, nickname, birthdate, country, city, password } = userData;
+    const { email, nickname, birthdate, country, city } = userData;
 
-  // Validaciones únicas para email y nickname
-  const existingEmail = await User.findOne({ where: { email } });
-  if (existingEmail) throw new Error('El correo ya está registrado.');
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail) throw new Error('El correo ya está registrado.');
 
-  const existingNickname = await User.findOne({ where: { nickname } });
-  if (existingNickname) throw new Error('El nickname ya está registrado.');
+    const existingNickname = await User.findOne({ where: { nickname } });
+    if (existingNickname) throw new Error('El nickname ya está registrado.');
 
-  // Encriptar la contraseña
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Creación del usuario
-  const user = await User.create({ email, nickname, birthdate, country, city, password: hashedPassword });
-  return user;
+    const user = await User.create({ email, nickname, birthdate, country, city });
+    return user;
 };
 
-const findUserByEmail = async (email) => {
-  return await User.findOne({ where: { email } });
+const findAllUsers = async () => {
+    return await User.findAll();
 };
 
-module.exports = { createUser , findUserByEmail };
+const findUserById = async (id) => {
+    return await User.findByPk(id);
+};
+
+const updateUser  = async (id, userData) => {
+    const user = await findUserById(id);
+    if (!user) throw new Error('Usuario no encontrado.');
+
+    return await user.update(userData);
+};
+
+const deleteUser  = async (id) => {
+    const user = await findUserById(id);
+    if (!user) throw new Error('Usuario no encontrado.');
+
+    await user.destroy();
+};
+
+module.exports = { createUser , findAllUsers, findUserById, updateUser , deleteUser  };
